@@ -1,13 +1,16 @@
-from dash import Dash
-from src.layouts.dashboard import layout
-from src.callbacks.callback import register_callbacks
+from dash import Dash, html, page_container
+import dash_bootstrap_components as dbc
 
-app = Dash(__name__)
-app.title = "Death Dashboard"
 
-app.layout = layout
+from src.components.navbar import Navbar
 
-register_callbacks(app)
+app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+app.layout = dbc.Container([
+    # Navigation
+    Navbar(),
+    page_container  # ⬅ tempat render halaman
+])
 
 if __name__ == "__main__":
     app.run(debug=True)

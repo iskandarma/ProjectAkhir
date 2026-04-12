@@ -14,3 +14,11 @@ body {
     width: 70%;
     margin: auto;
 }
+
+.alert-box {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #e7f3ff;
+    color: #084298;
+    border: 1px solid #b6d4fe;
+}
