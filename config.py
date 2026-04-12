@@ -1,0 +1,1 @@
+DATA_PATH = "/Users/iskandar/Development/BelajarPython/ProjectAkhir/data/raw/Penyebab Kematian di Indonesia yang Dilaporkan - Raw.csv"
