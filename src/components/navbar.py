@@ -3,7 +3,7 @@ import dash
 
 def Navbar():
     return html.Div([
-        html.H2("📊 Dashboard Kematian Indonesia"),
+        html.H2("Dashboard Data Kematian di Indonesia"),
 
         html.Div([
             dcc.Link("Home", href="/"),
