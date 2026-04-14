@@ -33,7 +33,7 @@ layout = html.Div([
         selected_rows=[],
         page_action='native',
         page_current= 0,
-        page_size= 10,
+        page_size= 15,
         style_data={
             'color': 'black',
             'backgroundColor': 'white'

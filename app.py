@@ -1,16 +1,15 @@
 from dash import Dash, html, page_container
-import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+from src.components.navbar import Topbar
 
+app = Dash(__name__, use_pages=True)
 
-from src.components.navbar import Navbar
-
-app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-app.layout = dbc.Container([
-    # Navigation
-    Navbar(),
-    page_container  # ⬅ tempat render halaman
-])
+app.layout = dmc.MantineProvider(
+    children=[
+        Topbar(),
+        html.Div(page_container, className="main-content"),
+    ]
+)
 
 if __name__ == "__main__":
     app.run(debug=True)
