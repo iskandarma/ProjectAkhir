@@ -4,6 +4,7 @@ import pandas as pd
 import joblib
 import os
 import numpy as np
+import random
 
 dash.register_page(__name__, path="/classification", name="Classification Page")
 
@@ -13,6 +14,50 @@ model = joblib.load(os.path.join(MODEL_DIR, "model_classification.pkl"))
 scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
 feature_names = joblib.load(os.path.join(MODEL_DIR, "feature_names.pkl"))
 
+# Model Coefficients from Prediksi.ipynb (for Score Prediction)
+COEFS = {
+    "Intercept": 38.06446787080266,
+    "Peer_Influence_Positive": 1.075134,
+    "Internet_Access_Yes": 1.002231,
+    "Distance_from_Home_Near": 0.941533,
+    "Peer_Influence_Neutral": 0.538316,
+    "Extracurricular_Activities_Yes": 0.492132,
+    "Tutoring_Sessions": 0.484201,
+    "Parental_Education_Level_Postgraduate": 0.459020,
+    "Distance_from_Home_Moderate": 0.423431,
+    "Hours_Studied": 0.292456,
+    "Attendance": 0.197459,
+    "Physical_Activity": 0.196885,
+    "Previous_Scores": 0.048741,
+    "Parental_Education_Level_High School": -0.487155
+}
+
+# Terjemahan dan Motivasi
+LABEL_IDN = {
+    "Pass": "Lulus",
+    "Remidial": "Mengulang",
+    "Remedial": "Mengulang",
+    "Fail": "Tidak Lulus"
+}
+
+MOTIVATIONS = {
+    "Lulus": [
+        "Luar biasa! Kamu telah menunjukkan hasil yang gemilang. Pertahankan kerja kerasmu!",
+        "Prestasi yang membanggakan! Teruslah konsisten untuk meraih impian yang lebih tinggi.",
+        "Selamat! Hasil ini adalah bukti dedikasimu. Masa depan yang cerah menantimu."
+    ],
+    "Mengulang": [
+        "Sedikit lagi! Evaluasi kembali materi yang sulit dan kamu pasti bisa melampauinya.",
+        "Jangan menyerah, kamu hanya butuh sedikit perbaikan. Ayo tetap semangat belajar!",
+        "Masih ada kesempatan! Fokus pada area yang kurang dan buktikan kamu bisa lebih baik."
+    ],
+    "Tidak Lulus": [
+        "Kegagalan bukanlah akhir. Jadikan ini sebagai pelajaran untuk bangkit lebih kuat.",
+        "Tetap semangat! Temukan metode belajar yang lebih efektif dan coba lagi dengan berani.",
+        "Setiap tantangan adalah proses pendewasaan. Ayo evaluasi diri dan mulai langkah baru!"
+    ]
+}
+
 def input_wrapper(label, component):
     return html.Div([
         html.Label(label, className="prediction-label"),
@@ -21,8 +66,8 @@ def input_wrapper(label, component):
 
 layout = html.Div([
     html.Div([
-        html.H1("Student Academic Classification", style={'marginBottom': '5px'}),
-        html.P("Predict the student's academic status category (Pass, Remidial, or Fail).", style={'color': '#7f8c8d'})
+        html.H1("Student Academic Classification & Score", style={'marginBottom': '5px'}),
+        html.P("Predict the student's academic status category and numerical exam score.", style={'color': '#7f8c8d'})
     ], style={'marginBottom': '20px'}),
     
     # Input Area (Horizontal Grid)
@@ -98,22 +143,37 @@ layout = html.Div([
         ], style={'display': 'flex', 'flexWrap': 'wrap', 'margin': '0 -10px'}),
     ], className="form-section", style={'padding': '20px', 'marginBottom': '20px'}),
     
-    # Result Area (Below)
+    # Combined Result Area
     html.Div([
         html.Div([
-            html.H2("ACADEMIC STATUS PREDICTION", style={'fontSize': '1.2rem', 'margin': '0', 'letterSpacing': '2px', 'color': '#7f8c8d'}),
-            html.Div(id="classification-output", style={
-                'fontSize': '80px', 
-                'fontWeight': '900', 
-                'lineHeight': '1',
-                'margin': '10px 0'
-            }),
+            # Academic Status Column
             html.Div([
-                html.Span("Model: Logistic Regression (Multinomial)"),
-                html.Br(),
-                html.Span("Error Rate: +-25.62% (Global)")
-            ], style={'color': '#95a5a6', 'fontSize': '0.9rem', 'marginTop': '10px'})
-        ], style={'textAlign': 'center'})
+                html.H2("ACADEMIC STATUS", style={'fontSize': '1rem', 'margin': '0', 'letterSpacing': '2px', 'color': '#7f8c8d'}),
+                html.Div(id="classification-output", style={'fontSize': '45px', 'fontWeight': '900', 'margin': '10px 0'}),
+            ], style={'flex': '1', 'borderRight': '1px solid #edf2f7', 'padding': '10px'}),
+            
+            # Predicted Score Column
+            html.Div([
+                html.H2("PREDICTED SCORE", style={'fontSize': '1rem', 'margin': '0', 'letterSpacing': '2px', 'color': '#7f8c8d'}),
+                html.Div(id="class-prediction-output", style={'fontSize': '45px', 'fontWeight': '900', 'color': '#2c3e50', 'margin': '10px 0'}),
+            ], style={'flex': '1', 'padding': '10px'}),
+        ], style={'display': 'flex', 'textAlign': 'center'}),
+        
+        html.Hr(style={'margin': '20px 0', 'border': '0', 'borderTop': '1px solid #edf2f7'}),
+        
+        html.Div(id="classification-summary", style={
+            'fontSize': '1.1rem', 
+            'fontStyle': 'italic', 
+            'color': '#34495e', 
+            'textAlign': 'center',
+            'marginBottom': '15px'
+        }),
+
+        html.Div([
+            html.Span("Models: Logistic Regression (Classification) & Linear Regression (Score Prediction)"),
+            html.Br(),
+            html.Span("MAE Score: +-0.98 | Error Rate Class: +-25.62%")
+        ], style={'color': '#95a5a6', 'fontSize': '0.85rem', 'textAlign': 'center'})
     ], style={
         'padding': '30px',
         'borderRadius': '16px',
@@ -125,7 +185,9 @@ layout = html.Div([
 
 @callback(
     [Output("classification-output", "children"),
-     Output("classification-output", "style")],
+     Output("classification-output", "style"),
+     Output("class-prediction-output", "children"),
+     Output("classification-summary", "children")],
     [Input("class-hours", "value"),
      Input("class-attendance", "value"),
      Input("class-prev-scores", "value"),
@@ -137,15 +199,41 @@ layout = html.Div([
      Input("class-parental", "value"),
      Input("class-distance", "value")]
 )
-def update_classification(hours, attendance, prev_scores, tutoring, physical, 
-                          extra, internet, peer, parental, distance):
-    # Prepare input data
+def update_results(hours, attendance, prev_scores, tutoring, physical, 
+                   extra, internet, peer, parental, distance):
+    # --- Part 1: Numerical Score Prediction (Linear Logic) ---
+    val_hours = hours or 0
+    val_attendance = attendance or 0
+    val_prev_scores = prev_scores or 0
+    val_tutoring = tutoring or 0
+    val_physical = physical or 0
+    
+    score = COEFS["Intercept"]
+    score += COEFS["Hours_Studied"] * val_hours
+    score += COEFS["Attendance"] * val_attendance
+    score += COEFS["Previous_Scores"] * val_prev_scores
+    score += COEFS["Tutoring_Sessions"] * val_tutoring
+    score += COEFS["Physical_Activity"] * val_physical
+    
+    if extra == 'Yes': score += COEFS["Extracurricular_Activities_Yes"]
+    if internet == 'Yes': score += COEFS["Internet_Access_Yes"]
+    if peer == 'Positive': score += COEFS["Peer_Influence_Positive"]
+    elif peer == 'Neutral': score += COEFS["Peer_Influence_Neutral"]
+    if parental == 'Postgraduate': score += COEFS["Parental_Education_Level_Postgraduate"]
+    elif parental == 'High School': score += COEFS["Parental_Education_Level_High School"]
+    if distance == 'Near': score += COEFS["Distance_from_Home_Near"]
+    elif distance == 'Moderate': score += COEFS["Distance_from_Home_Moderate"]
+    
+    final_score = max(0, min(100, score))
+    formatted_score = f"{final_score:.2f}"
+
+    # --- Part 2: Categorical Classification (Logistic Logic) ---
     input_data = {
-        "Hours_Studied": [hours or 0],
-        "Attendance": [attendance or 0],
-        "Previous_Scores": [prev_scores or 0],
-        "Tutoring_Sessions": [tutoring or 0],
-        "Physical_Activity": [physical or 0],
+        "Hours_Studied": [val_hours],
+        "Attendance": [val_attendance],
+        "Previous_Scores": [val_prev_scores],
+        "Tutoring_Sessions": [val_tutoring],
+        "Physical_Activity": [val_physical],
         "Extracurricular_Activities_Yes": [1 if extra == "Yes" else 0],
         "Internet_Access_Yes": [1 if internet == "Yes" else 0],
         "Peer_Influence_Neutral": [1 if peer == "Neutral" else 0],
@@ -156,29 +244,30 @@ def update_classification(hours, attendance, prev_scores, tutoring, physical,
         "Distance_from_Home_Near": [1 if distance == "Near" else 0]
     }
     
-    # Create DataFrame and ensure column order
     input_df = pd.DataFrame(input_data)
     input_df = input_df[feature_names]
-    
-    # Scale
     X_scaled = scaler.transform(input_df)
-    
-    # Predict
     pred_idx = model.predict(X_scaled)[0]
     
-    # Map index to label
-    label_map = {0: "Fail", 1: "Remidial", 2: "Pass"}
-    result = label_map[pred_idx]
+    label_map_en = {0: "Fail", 1: "Remidial", 2: "Pass"}
+    res_en = label_map_en[pred_idx]
     
-    # Style colors
-    colors = {"Pass": "#27ae60", "Remidial": "#f39c12", "Fail": "#e74c3c"}
+    # Map to Indonesian
+    res_idn = LABEL_IDN.get(res_en, res_en)
     
-    style = {
-        'fontSize': '80px', 
+    colors = {"Pass": "#27ae60", "Remidial": "#f1c40f", "Fail": "#e74c3c"}
+    
+    status_style = {
+        'fontSize': '45px', 
         'fontWeight': '900', 
-        'lineHeight': '1',
         'margin': '10px 0',
-        'color': colors.get(result, "#2c3e50")
+        'color': colors.get(res_en, "#2c3e50")
     }
+
+    # Motivational Sentence selection
+    quotes = MOTIVATIONS.get(res_idn, ["Tetap semangat belajar!"])
+    motivation = random.choice(quotes)
     
-    return result.upper(), style
+    summary_text = f"Berdasarkan faktor-faktor di atas, siswa diprediksi {res_idn.upper()} dengan estimasi nilai ujian sebesar {formatted_score}. {motivation}"
+    
+    return res_en.upper(), status_style, formatted_score, summary_text
