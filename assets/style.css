@@ -165,3 +165,46 @@ p {
 .js-plotly-plot .plotly .bg {
     fill: #ffffff !important;
 }
+
+/* ─── Dashboard Home ───────────────────────────────────── */
+.kpi-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.kpi-card {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #ecf0f1;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-card h4 {
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.kpi-card h2 {
+    color: #212529;
+    font-weight: bold;
+}
+
+.chart-container {
+    display: flex;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    width: 100%;
+}
+
+.graph-large {
+    flex: 3;
+}
+
+.graph-small {
+    flex: 2;
+}
