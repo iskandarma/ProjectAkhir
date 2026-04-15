@@ -7,15 +7,18 @@ dash.register_page(__name__, path="/")
 
 df = get_data()
 
-# KPI
+# Menghitung jumlah data
 total_students = len(df)
+# Menghitung rata-rata nilai
 avg_score = round(df["Exam_Score"].mean(), 2)
+# Menghitung persentase kelulusan
 pass_rate = round((df["Academic_Status"] == "Pass").mean() * 100, 2)
 
-# Chart
+# Membuat chart
 hist_fig = px.histogram(df, x="Exam_Score", nbins=20)
 pie_fig = px.pie(df, names="Academic_Status")
 
+# Membuat card
 def card(title, value):
     return html.Div([
         html.H4(title, style={'color': '#495057', 'marginBottom': '5px'}),
@@ -33,7 +36,7 @@ layout = html.Div([
 
     html.H1("Home"),
 
-    # KPI
+    # Menampilkan KPI
     html.Div([
         card("Total Data", total_students),
         card("Avg Score", avg_score),
@@ -42,7 +45,7 @@ layout = html.Div([
 
     html.Br(),
 
-    # Charts
+    # Menampilkan chart
     html.Div([
         dcc.Graph(figure=hist_fig, style={'flex': '3'}),
         dcc.Graph(figure=pie_fig, style={'flex': '2'}),
