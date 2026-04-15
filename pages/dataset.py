@@ -1,15 +1,11 @@
 import dash
 from dash import html, dcc, Input, Output, callback, dash_table
 import pandas as pd
-# import dash_bootstrap_components as dbc
+
 from src.data.load_data import load_data
 from config import DATASETS
 
-# register page
 dash.register_page(__name__, path="/dataset", name="Dataset Page")
-
-# load data
-# df = load_data()
 
 layout = html.Div([
     html.Label('Dataset Viewer'),
@@ -23,6 +19,8 @@ layout = html.Div([
     
     html.Br(),
 
+    # styling untuk tabel 
+    # sumber https://dash.plotly.com/datatable/style
     dash_table.DataTable(
         id='tbl',
         editable=True,
@@ -67,7 +65,6 @@ layout = html.Div([
     
     html.Br(),
 
-    # dbc.Alert(id='tbl_out')
     html.Div(
         id='tbl_out',
         className='alert-box'
