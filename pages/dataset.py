@@ -1,6 +1,5 @@
 import dash
 from dash import html, dcc, Input, Output, callback, dash_table
-import pandas as pd
 
 from src.data.load_data import load_data
 from config import DATASETS
@@ -94,14 +93,15 @@ def update_column_options(dataset_type):
     
     options = [{'label': i, 'value': i} for i in df.columns]
     
-    # User requested defaults: hour_studied, attendance, exam_score, academic_status
+    # Column defaults: hour_studied, attendance, exam_score, academic_status
     # Map them to the actual column names in the CSV
-    requested_defaults = ["Hours_Studied", "Attendance", "Exam_Score", "Academic_Status"]
+    column_defaults = ["Hours_Studied", "Attendance", "Exam_Score", "Academic_Status"]
     
     # Filter only those that exist in the current dataframe
-    default_values = [i for i in requested_defaults if i in df.columns]
+    default_values = [i for i in column_defaults if i in df.columns]
     
     # If none of the defaults are found, fallback to all columns
+    # jika kolom default tidak ditemukan, maka akan menampilkan semua kolom
     if not default_values:
         default_values = [i for i in df.columns]
         
@@ -133,7 +133,7 @@ def update_table(active_cell, dataset_type, selected_columns):
     if not valid_cols:
          return [], [], f"{dataset_type} | Tidak ada kolom yang valid dipilih"
 
-    # Fix for real-time update bug: ensure both data and columns are always in sync
+    # Memastikan data dan kolom selalu sinkron
     data = df[valid_cols].to_dict('records')
     columns = [{"name": i, "id": i} for i in valid_cols]
     
