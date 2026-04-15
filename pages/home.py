@@ -16,7 +16,8 @@ pass_rate = round((df["Academic_Status"] == "Pass").mean() * 100, 2)
 
 # Membuat chart
 hist_fig = px.histogram(df, x="Exam_Score", nbins=20)
-pie_fig = px.pie(df, names="Academic_Status")
+pie_fig = px.pie(df, names="Academic_Status", color="Academic_Status",
+                 color_discrete_map={'Pass': '#2ecc71', 'Fail': '#e74c3c', 'Remidial': '#f1c40f'})
 
 # Membuat card
 def card(title, value):

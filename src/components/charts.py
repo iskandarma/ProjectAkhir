@@ -13,9 +13,17 @@ def bar_top10(df):
     fig = px.bar(top, x='Academic_Status', y='Exam_Score', title='Rata-rata Skor Berdasarkan Status Akademik')
     return fig
 
+# Define a consistent color map for academic status
+status_colors = {'Pass': '#2ecc71', 'Fail': '#e74c3c', 'Remidial': '#f1c40f'}
+
 def pie_chart(df, gender):
     dff = df[df['Gender'] == gender]
-    fig = px.pie(dff, names='Academic_Status', title=f'Distribusi Status Akademik ({gender})')
+    fig = px.pie(
+        dff, names='Academic_Status', 
+        title=f'Distribusi Status Akademik ({gender})',
+        color='Academic_Status',
+        color_discrete_map=status_colors
+    )
     return fig
 
 def distribution_plot(df, column):
@@ -57,6 +65,7 @@ def pairplot_matrix(df):
         df,
         dimensions=num_cols,
         color="Academic_Status",
+        color_discrete_map=status_colors,
         title="Pairplot (Scatter Matrix) Faktor Utama",
         template="plotly_white",
         opacity=0.4
