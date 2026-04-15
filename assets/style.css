@@ -208,3 +208,32 @@ p {
 .graph-small {
     flex: 2;
 }
+
+/* ─── Column Selector Checklist ───────────────────────── */
+.column-selector-container {
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.column-selector-container label {
+    margin-bottom: 0px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.column-selector-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}

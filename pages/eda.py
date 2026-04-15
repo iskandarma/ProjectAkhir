@@ -3,7 +3,7 @@ from dash import html, dcc
 from dash.dependencies import Input, Output
 
 from src.data.load_data import get_data
-from src.components.charts import bar_top10, distribution_plot, correlation_heatmap, scatter_plot, pairplot_matrix
+from src.components.charts import distribution_plot, correlation_heatmap, scatter_plot, pairplot_matrix
 
 dash.register_page(__name__, path="/eda", name="EDA Page")
 
