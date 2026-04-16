@@ -58,4 +58,9 @@ Aplikasi akan berjalan di `http://127.0.0.1:8050/`. Buka alamat tersebut di brow
 - `assets/`: File CSS untuk styling.
 - `notebooks/`: Proses analisis data dan pelatihan model (Jupyter Notebook).
 
+## Tim Pengembang : 
+1. Nur Istikomah, S.Pd. dari SMKN 1 Sukorejo
+2. Zahrotul Janah, S.Kom, M.M. dari SMK Muhammadiyah 8 Siliragung
+3. Moh Iskandar Maulana, S.ST dar SMKN 1 Lumajang
+
 Project ini dibuat ketika melaksanakan pelatihan Pemorgraman Data Science BBPPMPV BOE Malang Tahun 2026
