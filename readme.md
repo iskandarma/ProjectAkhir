@@ -5,6 +5,9 @@ Dashboard interaktif untuk menganalisis dan memprediksi performa akademik siswa 
 ## Deskripsi Proyek
 Proyek ini bertujuan untuk memberikan wawasan (insight) kepada pendidik dan orang tua mengenai faktor-faktor yang mempengaruhi nilai ujian siswa. Dashboard ini mencakup visualisasi data (EDA), eksplorasi dataset, serta fitur prediksi dan klasifikasi status akademik.
 
+<img width="1512" height="856" alt="Screenshot 2026-04-16 at 09 58 55" src="https://github.com/user-attachments/assets/e98ce0af-3c50-4d66-89bd-595bb25ca1fa" />
+
+
 ### Fitur Utama:
 - **Home**: Ringkasan KPI performa siswa secara keseluruhan.
 - **Dataset**: Eksplorasi data mentah dan ringkasan statistik.
