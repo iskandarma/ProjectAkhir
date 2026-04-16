@@ -10,7 +10,8 @@ from config import MODEL_DIR
 dash.register_page(__name__, path="/classification", name="Classification Page")
 
 # Load Model, Scaler, and Feature Names
-scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
+model = joblib.load(os.path.join(MODEL_DIR, "model_classification.pkl"))
+scaler = joblib.load(os.path.join(MODEL_DIR, "scaler_old.pkl"))
 feature_names = joblib.load(os.path.join(MODEL_DIR, "feature_names.pkl"))
 
 # Model Coefficients from Prediksi.ipynb (for Score Prediction)
