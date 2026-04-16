@@ -5,12 +5,11 @@ import joblib
 import os
 import numpy as np
 import random
+from config import MODEL_DIR
 
 dash.register_page(__name__, path="/classification", name="Classification Page")
 
 # Load Model, Scaler, and Feature Names
-MODEL_DIR = "/Users/iskandar/Development/BelajarPython/ProjectAkhir/data/models"
-model = joblib.load(os.path.join(MODEL_DIR, "model_classification.pkl"))
 scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
 feature_names = joblib.load(os.path.join(MODEL_DIR, "feature_names.pkl"))
 

@@ -1,4 +1,7 @@
 dash
+dash-mantine-components
 pandas
 plotly
 scikit-learn
+joblib
+numpy
